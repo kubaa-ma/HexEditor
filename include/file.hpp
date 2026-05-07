@@ -1,5 +1,5 @@
 #pragma once
-#define FILE_NAME "test.txt"
+#define FILE_NAME "obrazek.png"
 
 #include <stdint.h>
 #include <vector>

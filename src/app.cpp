@@ -86,10 +86,13 @@ bool Application::init(){
 
 void Application::run(){
     bool done = false;
-
     ImGuiIO& io = ImGui::GetIO();
-    
+    const auto& buffer = file_data.get_buffer();
+    const size_t rows = (buffer.size() + 15) / 16;
+    ImGuiListClipper clipper;
+
     while (!done){
+    
         SDL_Event event;
 
         while (SDL_PollEvent(&event)){
@@ -122,55 +125,58 @@ void Application::run(){
             ImGuiWindowFlags_NoResize
         );
 
-        const auto& buffer = file_data.get_buffer();
+        clipper.Begin(static_cast<int>(rows));
+        
+        while(clipper.Step()){
+            for (int row = clipper.DisplayStart; row < clipper.DisplayEnd; row++){
+                size_t i = row * 16;
 
-        for (size_t i = 0; i < buffer.size(); i += 16)
-        {
-            char line[256];
+                char line[256];
 
-            std::snprintf(
-                line,
-                sizeof(line),
-                "%08X: ",
-                (unsigned int)i
-            );
+                std::snprintf(
+                    line,
+                    sizeof(line),
+                    "%08X: ",
+                    (unsigned int)i
+                );
 
-            std::string hex_part = line;
-            std::string ascii_part;
+                std::string hex_part = line;
+                std::string ascii_part;
 
-            for (int j = 0; j < 16; j++)
-            {
-                if (i + j < buffer.size())
+                for (int j = 0; j < 16; j++)
                 {
-                    uint8_t byte = buffer[i + j];
+                    if (i + j < buffer.size())
+                    {
+                        uint8_t byte = buffer[i + j];
 
-                    char hex_byte[8];
+                        char hex_byte[8];
 
-                    std::snprintf(
-                        hex_byte,
-                        sizeof(hex_byte),
-                        "%02X ",
-                        byte
-                    );
+                        std::snprintf(
+                            hex_byte,
+                            sizeof(hex_byte),
+                            "%02X ",
+                            byte
+                        );
 
-                    hex_part += hex_byte;
+                        hex_part += hex_byte;
 
-                    if (byte >= 32 && byte <= 126)
-                        ascii_part += (char)byte;
+                        if (byte >= 32 && byte <= 126)
+                            ascii_part += (char)byte;
+                        else
+                            ascii_part += '.';
+                    }
                     else
-                        ascii_part += '.';
+                    {
+                        hex_part += "   ";
+                        ascii_part += ' ';
+                    }
                 }
-                else
-                {
-                    hex_part += "   ";
-                    ascii_part += ' ';
-                }
+
+                hex_part += " ";
+                hex_part += ascii_part;
+
+                ImGui::Text("%s", hex_part.c_str());
             }
-
-            hex_part += " ";
-            hex_part += ascii_part;
-
-            ImGui::Text("%s", hex_part.c_str());
         }
         
         ImGui::End();
