@@ -22,7 +22,7 @@ Current version can:
 
 ## Screenshot
 
-<img width="1316" height="1195" alt="HexaEdit Screenshot" src="https://github.com/user-attachments/assets/0bf4106f-739e-445f-879a-5ecc5a91fffb" />
+<img width="577" height="1032" alt="screen" src="https://github.com/user-attachments/assets/068b1438-6fea-4198-82f0-475b9a02009b" />
 
 ---
 
