@@ -80,8 +80,3 @@ cmake ..
 cmake --build .
 ```
 
----
-
-## Goal
-
-This project is mainly for learning low level programming and GUI application development in modern C++.
