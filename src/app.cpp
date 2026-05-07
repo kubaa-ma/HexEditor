@@ -13,6 +13,8 @@
 #endif
 
 #include <iostream>
+#include <vector>
+
 #include "app.hpp"
 
 Application::Application()
@@ -75,6 +77,9 @@ bool Application::init(){
     // Setup Platform/Renderer backends
     ImGui_ImplSDL3_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version);
+    if (!file_data.get_data_from_file()){
+        return false;
+    }
 
     return true;
 }
@@ -83,7 +88,7 @@ void Application::run(){
     bool done = false;
 
     ImGuiIO& io = ImGui::GetIO();
-
+    
     while (!done){
         SDL_Event event;
 
@@ -117,8 +122,57 @@ void Application::run(){
             ImGuiWindowFlags_NoResize
         );
 
+        const auto& buffer = file_data.get_buffer();
 
-        ImGui::Text("Ahoj svete!");
+        for (size_t i = 0; i < buffer.size(); i += 16)
+        {
+            char line[256];
+
+            std::snprintf(
+                line,
+                sizeof(line),
+                "%08X: ",
+                (unsigned int)i
+            );
+
+            std::string hex_part = line;
+            std::string ascii_part;
+
+            for (int j = 0; j < 16; j++)
+            {
+                if (i + j < buffer.size())
+                {
+                    uint8_t byte = buffer[i + j];
+
+                    char hex_byte[8];
+
+                    std::snprintf(
+                        hex_byte,
+                        sizeof(hex_byte),
+                        "%02X ",
+                        byte
+                    );
+
+                    hex_part += hex_byte;
+
+                    if (byte >= 32 && byte <= 126)
+                        ascii_part += (char)byte;
+                    else
+                        ascii_part += '.';
+                }
+                else
+                {
+                    hex_part += "   ";
+                    ascii_part += ' ';
+                }
+            }
+
+            hex_part += " ";
+            hex_part += ascii_part;
+
+            ImGui::Text("%s", hex_part.c_str());
+        }
+        
         ImGui::End();
 
         ImGui::Render();

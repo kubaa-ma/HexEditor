@@ -19,6 +19,8 @@ add_executable(${CMAKE_PROJECT_NAME}
   ${CMAKE_CURRENT_SOURCE_DIR}/third-party/imgui-1.92.7/backends/imgui_impl_sdl3.cpp
 
   ${CMAKE_CURRENT_SOURCE_DIR}/src/app.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/file.cpp
+
 )
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE

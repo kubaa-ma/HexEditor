@@ -14,13 +14,14 @@
 
 #include <iostream>
 #include "app.hpp"
+#include "file.hpp"
 
 
 int main(int, char**){
     Application app;
     if(!app.init())
         return 1;
-    
+
     app.run();
     app.shutdown();
 
