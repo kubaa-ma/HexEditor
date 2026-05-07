@@ -18,6 +18,8 @@ add_executable(${CMAKE_PROJECT_NAME}
   ${CMAKE_CURRENT_SOURCE_DIR}/third-party/imgui-1.92.7/backends/imgui_impl_opengl3.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/third-party/imgui-1.92.7/backends/imgui_impl_sdl3.cpp
 
+  ${CMAKE_CURRENT_SOURCE_DIR}/third-party/nativefiledialog-extended/src/nfd_win.cpp
+
   ${CMAKE_CURRENT_SOURCE_DIR}/src/app.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/file.cpp
 
@@ -35,6 +37,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/third-party/imgui-1.92.7/backends
   ${CMAKE_CURRENT_SOURCE_DIR}/third-party/SDL3/include
   ${CMAKE_CURRENT_SOURCE_DIR}/include/
+  ${CMAKE_CURRENT_SOURCE_DIR}/third-party/nativefiledialog-extended/src/include
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE

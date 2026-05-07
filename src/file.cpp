@@ -27,3 +27,18 @@ bool FileData::get_data_from_file(){
 const std::vector<uint8_t>& FileData::get_buffer() const{
     return buffer;
 }
+
+bool FileData::load_file(const std::string& path){
+    std::ifstream file(path, std::ios::binary);
+
+    if(!file){
+        return false;
+    }
+
+    buffer.clear();
+    char byte;
+    while(file.read(&byte, 1)){
+        buffer.push_back(static_cast<uint8_t>(byte));
+    }
+    return true;
+}

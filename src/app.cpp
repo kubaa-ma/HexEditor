@@ -11,6 +11,7 @@
 #ifdef __EMSCRIPTEN__
 #include "../libs/emscripten/emscripten_mainloop_stub.h"
 #endif
+#include <nfd.hpp>
 
 #include <iostream>
 #include <vector>
@@ -87,12 +88,12 @@ bool Application::init(){
 void Application::run(){
     bool done = false;
     ImGuiIO& io = ImGui::GetIO();
-    const auto& buffer = file_data.get_buffer();
-    const size_t rows = (buffer.size() + 15) / 16;
     ImGuiListClipper clipper;
-
-    while (!done){
     
+    while (!done){
+        
+        const auto& buffer = file_data.get_buffer();
+        const size_t rows = (buffer.size() + 15) / 16;
         SDL_Event event;
 
         while (SDL_PollEvent(&event)){
@@ -127,6 +128,23 @@ void Application::run(){
 
         clipper.Begin(static_cast<int>(rows));
         
+       if (ImGui::Button("Open File")){
+            NFD::UniquePathU8 outPath;
+
+            nfdresult_t result = NFD::OpenDialog(
+                outPath,
+                nullptr,
+                0,
+                nullptr
+            );
+
+            if (result == NFD_OKAY){
+                if(!file_data.load_file(outPath.get())){
+                    std::cout << "Failed to load file" << std::endl;
+                }
+            }
+        }
+
         while(clipper.Step()){
             for (int row = clipper.DisplayStart; row < clipper.DisplayEnd; row++){
                 size_t i = row * 16;
