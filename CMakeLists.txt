@@ -17,6 +17,8 @@ add_executable(${CMAKE_PROJECT_NAME}
 
   ${CMAKE_CURRENT_SOURCE_DIR}/third-party/imgui-1.92.7/backends/imgui_impl_opengl3.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/third-party/imgui-1.92.7/backends/imgui_impl_sdl3.cpp
+
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/app.cpp
 )
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
@@ -30,6 +32,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/third-party/imgui-1.92.7
   ${CMAKE_CURRENT_SOURCE_DIR}/third-party/imgui-1.92.7/backends
   ${CMAKE_CURRENT_SOURCE_DIR}/third-party/SDL3/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
