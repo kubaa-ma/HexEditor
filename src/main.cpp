@@ -33,12 +33,12 @@ int init_all(SDL_Window*& window, SDL_GLContext& gl_context){
     SDL_WindowFlags window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN | SDL_WINDOW_HIGH_PIXEL_DENSITY;
     window = SDL_CreateWindow("HexaEdit", (int)(1280 * main_scale), (int)(800 * main_scale), window_flags);
     if (window == nullptr){
-        std::cout << "Error: SDL_CreateWindow(): %s\n" <<  SDL_GetError() << std::endl;
+        std::cout << "Error: SDL_CreateWindow(): " <<  SDL_GetError() << std::endl;
         return 1;
     }
     gl_context = SDL_GL_CreateContext(window);
     if (gl_context == nullptr){
-        std::cout << "Error: SDL_GL_CreateContext(): %s\n" << SDL_GetError() << std::endl;
+        std::cout << "Error: SDL_GL_CreateContext(): " << SDL_GetError() << std::endl;
         return 1;
     }
 
@@ -71,19 +71,71 @@ int init_all(SDL_Window*& window, SDL_GLContext& gl_context){
     return 0;
 }
 
-void loop_run(SDL_Window* window){
+void loop_run(SDL_Window* window)
+{
     bool done = false;
 
-    while(!done){
+    ImGuiIO& io = ImGui::GetIO();
+
+    while (!done)
+    {
         SDL_Event event;
-        while(SDL_PollEvent(&event)){
+
+        while (SDL_PollEvent(&event))
+        {
             ImGui_ImplSDL3_ProcessEvent(&event);
-            if(event.type == SDL_EVENT_QUIT)
+
+            if (event.type == SDL_EVENT_QUIT)
                 done = true;
-            if(event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED && event.window.windowID == SDL_GetWindowID(window))
+
+            if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED &&
+                event.window.windowID == SDL_GetWindowID(window))
+            {
                 done = true;
+            }
         }
 
+        if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)
+        {
+            SDL_Delay(10);
+            continue;
+        }
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL3_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::SetNextWindowPos(ImVec2(0, 0));
+        ImGui::SetNextWindowSize(io.DisplaySize);
+
+        ImGui::Begin(
+            "MainWindow",
+            nullptr,
+            ImGuiWindowFlags_NoDecoration |
+            ImGuiWindowFlags_NoMove |
+            ImGuiWindowFlags_NoResize
+        );
+
+        ImGui::Text("Hello World!");
+
+        ImGui::End();
+
+        ImGui::Render();
+
+        glViewport(
+            0,
+            0,
+            (int)io.DisplaySize.x,
+            (int)io.DisplaySize.y
+        );
+
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        SDL_GL_SwapWindow(window);
     }
 }
 
