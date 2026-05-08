@@ -21,7 +21,7 @@ Current version can:
 ---
 
 ## Screenshot
-
+<img width="1241" height="1032" alt="screen1" src="https://github.com/user-attachments/assets/8c3905b1-3c5d-44e1-b6ae-8fc37411e003" />
 <img width="577" height="1032" alt="screen" src="https://github.com/user-attachments/assets/068b1438-6fea-4198-82f0-475b9a02009b" />
 
 ---
