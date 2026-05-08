@@ -1,26 +1,55 @@
 #include "file.hpp"
-#include <stdio.h>
-#include <iostream>
-#include <stdint.h>
+
 #include <fstream>
-#include <vector>
+#include <iostream>
 
 
+bool FileData::load_file(const std::string& path){
+    std::ifstream file(path, std::ios::binary | std::ios::ate);
 
-bool FileData::get_data_from_file(){
-    std::ifstream file(FILE_NAME, std::ios::binary);
-
-    if (!file){
-        std::cout << "Error opening the file: "<< FILE_NAME << std::endl;
+    if (!file) {
+        std::cerr << "Error opening the file: " << path << std::endl;
         return false;
     }
 
-    char byte;
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
 
-    while (file.read(&byte, 1)){
-        buffer.push_back(static_cast<uint8_t>(byte));
+    buffer.resize((size_t)size);
+
+    if (!file.read(reinterpret_cast<char*>(buffer.data()), size)) {
+        std::cerr << "Error opening the file: " << path << std::endl;
+        buffer.clear();
+        return false;
     }
 
+    filepath = path;
+    return true;
+}
+
+bool FileData::save_file(){
+    if (filepath.empty()) {
+        std::cerr << "No way save the file, use 'Save as'" << std::endl;
+        return false;
+    }
+
+    return save_file(filepath);
+}
+
+bool FileData::save_file(const std::string& path){
+    std::ofstream file(path, std::ios::binary);
+
+    if (!file) {
+        std::cerr << "Error opening the file for write: " << path << std::endl;
+        return false;
+    }
+
+    if (!file.write(reinterpret_cast<const char*>(buffer.data()), (std::streamsize)buffer.size())) {
+        std::cerr << "Error writing to file: " << path << std::endl;
+        return false;
+    }
+
+    filepath = path;
     return true;
 }
 
@@ -28,17 +57,10 @@ const std::vector<uint8_t>& FileData::get_buffer() const{
     return buffer;
 }
 
-bool FileData::load_file(const std::string& path){
-    std::ifstream file(path, std::ios::binary);
+std::vector<uint8_t>& FileData::get_mutable_buffer(){
+    return buffer;
+}
 
-    if(!file){
-        return false;
-    }
-
-    buffer.clear();
-    char byte;
-    while(file.read(&byte, 1)){
-        buffer.push_back(static_cast<uint8_t>(byte));
-    }
-    return true;
+const std::string& FileData::get_filepath() const{
+    return filepath;
 }
